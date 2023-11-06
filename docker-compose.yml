@@ -1,0 +1,29 @@
+services:
+  proftpd:
+    network_mode: "host"
+    build: .
+    volumes:
+      - ./proftpd.conf:/usr/local/etc/proftpd.conf
+      - ./sftp.conf:/usr/local/etc/sftp.conf
+      - ./sql.conf:/usr/local/etc/sql.conf
+      - storage_proftpd:/home/proftpd
+      - ./data/ssh:/etc/ssh
+      - ./log:/var/log
+    env_file:
+      - '.env'
+    ports:
+      - "20"
+      - "21"
+      - "2222"
+      - "60000-65535/tcp"
+    restart: always
+    mem_limit: 500m
+    mem_reservation: 100m
+    cpus: 0.3
+volumes:
+  storage_proftpd:
+    driver: local # Define the driver and options under the volume name
+    driver_opts:
+      type: none
+      device: /home/proftpd
+      o: bind
